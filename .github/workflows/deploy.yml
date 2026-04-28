@@ -37,7 +37,7 @@ jobs:
       # 1. BUILD WEB
       # ==========================================
       - name: Build Web
-        run: flutter build web --release --base-href /TheBookOfAnswers/ # CHANGE THIS if your repo name is different!
+        run: flutter build web --release --base-href /
 
       # ==========================================
       # 2. DEPLOY WEB TO GITHUB PAGES
