@@ -1,4 +1,6 @@
-# 🕯️ The Book of Answers (ZenFlip)
+<div align="center">
+  <img src="docs/banner.png" alt="The Book of Answers" width="100%">
+</div>
 
 > *When the mind is clouded and the path is obscured, the answers you seek lie within the void.*
 
