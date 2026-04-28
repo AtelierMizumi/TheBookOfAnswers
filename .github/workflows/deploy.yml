@@ -1,0 +1,64 @@
+name: Flutter Web & APK Deploy
+
+# Trigger on pushes to the main branch
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
+
+# Manage permissions for GitHub Pages deployment
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17' # Required for Android build
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # ==========================================
+      # 1. BUILD WEB
+      # ==========================================
+      - name: Build Web
+        run: flutter build web --release --base-href /TheBookOfAnswer/ # CHANGE THIS if your repo name is different!
+
+      # ==========================================
+      # 2. DEPLOY WEB TO GITHUB PAGES
+      # ==========================================
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
+          
+      # ==========================================
+      # 3. BUILD ANDROID APK
+      # ==========================================
+      - name: Build APK
+        run: flutter build apk --release
+
+      # ==========================================
+      # 4. UPLOAD APK AS ARTIFACT
+      # ==========================================
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZenFlip-Release-APK
+          path: build/app/outputs/flutter-apk/app-release.apk
