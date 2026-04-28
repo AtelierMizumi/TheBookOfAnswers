@@ -51,7 +51,7 @@ class TomesTab extends ConsumerWidget {
                               const SizedBox(height: 8),
                               Text(tome.desc, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppTheme.ash)),
                               const SizedBox(height: 8),
-                              Text('${AnswersDB.answers[tome.id]?.length ?? 0} pages', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppTheme.iron, fontSize: 8)),
+                              Text('${AnswersDB.getAnswersFor(tome.id).length} pages', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppTheme.iron, fontSize: 8)),
                             ],
                           ),
                         ),

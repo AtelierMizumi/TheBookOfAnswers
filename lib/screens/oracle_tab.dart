@@ -233,7 +233,27 @@ class _OracleTabState extends ConsumerState<OracleTab> with SingleTickerProvider
               runSpacing: 16,
               alignment: WrapAlignment.center,
               children: [
-                PixelButton(text: '☆ Save', onPressed: () {}),
+                PixelButton(text: '☆ Save', onPressed: () {
+                  if (state.currentAnswer != null) {
+                    final tome = ref.read(currentTomeProvider);
+                    final entry = JournalEntry(
+                      id: DateTime.now().millisecondsSinceEpoch.toString(),
+                      question: _questionController.text.isEmpty ? "What weighs upon your mind..." : _questionController.text,
+                      text: state.currentAnswer!.text,
+                      attribution: state.currentAnswer!.attribution,
+                      tomeId: tome.id,
+                      timestamp: DateTime.now().millisecondsSinceEpoch,
+                    );
+                    ref.read(journalProvider.notifier).addEntry(entry);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Saved to Journal', style: TextStyle(color: AppTheme.dust)),
+                        backgroundColor: AppTheme.deep,
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
+                }),
                 PixelButton(text: '↺ Ask Again', isAccent: true, onPressed: () {
                   ref.read(oracleProvider.notifier).reset();
                   _questionController.clear();

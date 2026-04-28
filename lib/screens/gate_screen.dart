@@ -125,11 +125,11 @@ class _Candle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AmbientStepper(
-      fps: 4, // 4fps flicker for candle
+      fps: 8, // 8fps flicker for candle (was 4)
       builder: (context, tick) {
         
         final heightMod = (tick % 4 == 0) ? 8.0 : (tick % 2 == 0 ? 10.0 : 7.0);
-        final opacity = (tick % 3 == 0) ? 0.9 : 1.0;
+        final opacity = (tick % 3 == 0) ? 0.8 : 1.0;
         
         return Column(
           children: [

@@ -68,7 +68,7 @@ class JournalTab extends ConsumerWidget {
                             Text(entry.tomeId, style: const TextStyle(color: AppTheme.iron, fontSize: 8)),
                             InkWell(
                               onTap: () {
-                                // Delete later
+                                ref.read(journalProvider.notifier).removeEntry(entry.id);
                               },
                               child: const Text('✕ remove', style: TextStyle(color: AppTheme.iron, fontSize: 8)),
                             ),

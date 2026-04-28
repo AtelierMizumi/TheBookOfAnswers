@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import '../models/models.dart';
 import '../models/environment.dart';
 import '../data/answers_db.dart';
@@ -103,16 +104,44 @@ final oracleProvider = NotifierProvider<OracleNotifier, OracleState>(() {
 // --- Journal Provider ---
 class JournalNotifier extends Notifier<List<JournalEntry>> {
   @override
-  List<JournalEntry> build() => [];
-
-  // TODO: Sync with Hive
+  List<JournalEntry> build() {
+    final box = Hive.box('journal');
+    final List<JournalEntry> entries = [];
+    
+    // Load from Hive
+    for (var i = 0; i < box.length; i++) {
+      final item = box.getAt(i) as Map<dynamic, dynamic>?;
+      if (item != null) {
+        entries.add(JournalEntry.fromMap(item));
+      }
+    }
+    
+    // Sort by newest first
+    entries.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    return entries;
+  }
 
   void addEntry(JournalEntry entry) {
     state = [entry, ...state];
+    _saveToHive();
+  }
+
+  void removeEntry(String id) {
+    state = state.where((e) => e.id != id).toList();
+    _saveToHive();
   }
 
   void clear() {
     state = [];
+    _saveToHive();
+  }
+  
+  void _saveToHive() {
+    final box = Hive.box('journal');
+    box.clear(); // Overwrite all
+    for (var entry in state) {
+      box.add(entry.toMap());
+    }
   }
 }
 
