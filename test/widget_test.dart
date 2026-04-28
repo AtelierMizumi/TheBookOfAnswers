@@ -8,7 +8,7 @@ import 'package:zenflip/widgets/pixel_button.dart';
 void main() {
   setUpAll(() async {
     // We mock Hive initialization for tests
-    await Hive.initFlutter('test_hive_db');
+    Hive.init('test_hive_db');
     await Hive.openBox('journal');
     await Hive.openBox('settings');
   });

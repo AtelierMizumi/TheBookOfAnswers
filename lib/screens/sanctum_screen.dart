@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
 import '../widgets/ambient_background.dart';
+import '../models/models.dart';
+import '../models/environment.dart';
+import '../providers/providers.dart';
 import 'oracle_tab.dart';
 import 'tomes_tab.dart';
 import 'journal_tab.dart';
@@ -60,7 +63,7 @@ class _SanctumScreenState extends State<SanctumScreen> {
                             color: AppTheme.deep,
                             initialValue: currentEnv,
                             onSelected: (env) {
-                              ref.read(environmentProvider.notifier).state = env;
+                              ref.read(environmentProvider.notifier).setEnv(env);
                             },
                             itemBuilder: (context) {
                               return Environments.all.map((env) {

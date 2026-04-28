@@ -29,7 +29,7 @@ class TomesTab extends ConsumerWidget {
                 final isActive = tome.id == currentTome.id;
                 return InkWell(
                   onTap: () {
-                    ref.read(currentTomeProvider.notifier).state = tome;
+                    ref.read(currentTomeProvider.notifier).setTome(tome);
                   },
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 12),

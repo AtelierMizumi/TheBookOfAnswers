@@ -3,16 +3,36 @@ import '../models/models.dart';
 import '../models/environment.dart';
 import '../data/answers_db.dart';
 
-// --- Environment Provider ---
-final environmentProvider = StateProvider<SanctumEnv>((ref) => SanctumEnv.fireplace);
+class EnvironmentNotifier extends Notifier<SanctumEnv> {
+  @override
+  SanctumEnv build() => SanctumEnv.fireplace;
+
+  void setEnv(SanctumEnv env) {
+    state = env;
+  }
+}
+
+final environmentProvider = NotifierProvider<EnvironmentNotifier, SanctumEnv>(() {
+  return EnvironmentNotifier();
+});
 
 final currentEnvironmentProvider = Provider<SanctumEnvironment>((ref) {
   final env = ref.watch(environmentProvider);
   return Environments.get(env);
 });
 
-// --- Tome Provider ---
-final currentTomeProvider = StateProvider<Tome>((ref) => AnswersDB.books.first);
+class CurrentTomeNotifier extends Notifier<Tome> {
+  @override
+  Tome build() => AnswersDB.books.first;
+
+  void setTome(Tome tome) {
+    state = tome;
+  }
+}
+
+final currentTomeProvider = NotifierProvider<CurrentTomeNotifier, Tome>(() {
+  return CurrentTomeNotifier();
+});
 
 // --- Oracle Ritual State ---
 enum OraclePhase { idle, charging, charged, revealing, revealed }
@@ -41,8 +61,9 @@ class OracleState {
   }
 }
 
-class OracleNotifier extends StateNotifier<OracleState> {
-  OracleNotifier() : super(const OracleState(phase: OraclePhase.idle));
+class OracleNotifier extends Notifier<OracleState> {
+  @override
+  OracleState build() => const OracleState(phase: OraclePhase.idle);
 
   void startCharging() {
     state = state.copyWith(phase: OraclePhase.charging, chargeProgress: 0.0);
@@ -75,13 +96,14 @@ class OracleNotifier extends StateNotifier<OracleState> {
   }
 }
 
-final oracleProvider = StateNotifierProvider<OracleNotifier, OracleState>((ref) {
+final oracleProvider = NotifierProvider<OracleNotifier, OracleState>(() {
   return OracleNotifier();
 });
 
 // --- Journal Provider ---
-class JournalNotifier extends StateNotifier<List<JournalEntry>> {
-  JournalNotifier() : super([]);
+class JournalNotifier extends Notifier<List<JournalEntry>> {
+  @override
+  List<JournalEntry> build() => [];
 
   // TODO: Sync with Hive
 
@@ -94,6 +116,6 @@ class JournalNotifier extends StateNotifier<List<JournalEntry>> {
   }
 }
 
-final journalProvider = StateNotifierProvider<JournalNotifier, List<JournalEntry>>((ref) {
+final journalProvider = NotifierProvider<JournalNotifier, List<JournalEntry>>(() {
   return JournalNotifier();
 });
