@@ -57,8 +57,19 @@ jobs:
       # ==========================================
       # 4. UPLOAD APK AS ARTIFACT
       # ==========================================
-      - name: Upload APK
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ZenFlip-Release-APK
           path: build/app/outputs/flutter-apk/app-release.apk
+
+      # ==========================================
+      # 5. CREATE GITHUB RELEASE
+      # ==========================================
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: "v1.0.${{ github.run_number }}"
+          name: "The Book of Answers v1.0.${{ github.run_number }}"
+          files: build/app/outputs/flutter-apk/app-release.apk
+          token: ${{ secrets.GITHUB_TOKEN }}

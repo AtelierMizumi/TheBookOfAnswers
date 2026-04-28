@@ -40,12 +40,14 @@ class _GateScreenState extends State<GateScreen> {
         children: [
           const AmbientBackground(),
           
-          AnimatedOpacity(
-            opacity: _isEntering ? 0.0 : 1.0,
-            duration: const Duration(seconds: 2),
-            child: Center(
-              child: SingleChildScrollView(
-                child: Column(
+          SafeArea(
+            child: AnimatedOpacity(
+              opacity: _isEntering ? 0.0 : 1.0,
+              duration: const Duration(seconds: 2),
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+                  child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Candles
@@ -109,6 +111,7 @@ class _GateScreenState extends State<GateScreen> {
                       ),
                     ),
                   ],
+                ),
                 ),
               ),
             ),

@@ -80,19 +80,22 @@ class _OracleTabState extends ConsumerState<OracleTab> with SingleTickerProvider
     final isRevealedView = oracleState.phase == OraclePhase.revealed || oracleState.phase == OraclePhase.revealing;
 
     return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 480),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (!isRevealedView) ...[
-              _buildQuestionInput(),
-              const SizedBox(height: 48),
-              _buildTheBook(oracleState),
-            ] else ...[
-              _buildAnswerPage(oracleState),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 480),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (!isRevealedView) ...[
+                _buildQuestionInput(),
+                const SizedBox(height: 48),
+                _buildTheBook(oracleState),
+              ] else ...[
+                _buildAnswerPage(oracleState),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
