@@ -15,7 +15,8 @@ void main() {
 
   testWidgets('App renders GateScreen and contains ENTER button', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const ProviderScope(child: ZenFlipApp()));
+    // Pass showOnboarding: false to always start at GateScreen in tests
+    await tester.pumpWidget(const ProviderScope(child: ZenFlipApp(showOnboarding: false)));
 
     // Verify that our app starts on the Gate Screen with "The Book of Answers" text
     expect(find.textContaining('The Book\nof Answers'), findsOneWidget);

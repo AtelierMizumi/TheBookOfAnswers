@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
 import '../widgets/pixel_button.dart';
 import '../widgets/ambient_background.dart';
 import '../widgets/stepped_animation.dart';
+import '../providers/providers.dart';
 import 'sanctum_screen.dart';
 
-class GateScreen extends StatefulWidget {
+class GateScreen extends ConsumerStatefulWidget {
   const GateScreen({super.key});
 
   @override
-  State<GateScreen> createState() => _GateScreenState();
+  ConsumerState<GateScreen> createState() => _GateScreenState();
 }
 
-class _GateScreenState extends State<GateScreen> {
+class _GateScreenState extends ConsumerState<GateScreen> {
   bool _isEntering = false;
   
   void _enter() {
@@ -32,10 +34,24 @@ class _GateScreenState extends State<GateScreen> {
     });
   }
 
+  /// Format a number with comma thousands separators, e.g. 1234 → "1,234"
+  String _formatCount(int count) {
+    final str = count.toString();
+    final result = StringBuffer();
+    for (var i = 0; i < str.length; i++) {
+      if (i > 0 && (str.length - i) % 3 == 0) result.write(',');
+      result.write(str[i]);
+    }
+    return result.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final visitorCount = ref.watch(visitorCounterProvider);
+
     return Scaffold(
       backgroundColor: AppTheme.voidColor,
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
           const AmbientBackground(),
@@ -102,10 +118,11 @@ class _GateScreenState extends State<GateScreen> {
                     ),
                     
                     const SizedBox(height: 64),
-                    Text('you are visitor no. 43,564\nlast offering: anno domini MMXXVI', 
+                    Text(
+                      'you are visitor no. ${_formatCount(visitorCount)}\nlast offering: anno domini MMXXVI',
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppTheme.iron, 
+                        color: AppTheme.iron,
                         fontSize: 8,
                         height: 2.0,
                       ),

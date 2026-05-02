@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 import 'dart:math';
 import '../theme/app_theme.dart';
 import '../models/models.dart';
@@ -49,6 +51,7 @@ class _OracleTabState extends ConsumerState<OracleTab> with SingleTickerProvider
     // Unfocus text field
     FocusScope.of(context).unfocus();
     
+    HapticFeedback.heavyImpact(); // tactile feedback on hold start
     ref.read(oracleProvider.notifier).startCharging();
     _chargeController.forward(from: 0);
   }
@@ -63,6 +66,7 @@ class _OracleTabState extends ConsumerState<OracleTab> with SingleTickerProvider
   void _onCharged() {
     final oracleNode = ref.read(oracleProvider.notifier);
     oracleNode.completeCharge();
+    HapticFeedback.vibrate(); // tactile feedback on charged
 
     // Flash and move to reveal
     Future.delayed(const Duration(milliseconds: 1200), () {
@@ -72,6 +76,15 @@ class _OracleTabState extends ConsumerState<OracleTab> with SingleTickerProvider
       
       oracleNode.revealAnswer(answers[random]);
     });
+  }
+
+  void _shareAnswer(Answer answer) {
+    final attribution = answer.attribution != null
+        ? '\n\n— ${answer.attribution}'
+        : '';
+    final text =
+        '"${answer.text}"$attribution\n\n✦ Revealed by The Book of Answers ✦';
+    Share.share(text, subject: 'A revelation from The Book of Answers');
   }
 
   @override
@@ -238,6 +251,7 @@ class _OracleTabState extends ConsumerState<OracleTab> with SingleTickerProvider
               children: [
                 PixelButton(text: '☆ Save', onPressed: () {
                   if (state.currentAnswer != null) {
+                    HapticFeedback.lightImpact();
                     final tome = ref.read(currentTomeProvider);
                     final entry = JournalEntry(
                       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -257,6 +271,14 @@ class _OracleTabState extends ConsumerState<OracleTab> with SingleTickerProvider
                     );
                   }
                 }),
+                PixelButton(
+                  text: '↗ Share',
+                  onPressed: () {
+                    if (state.currentAnswer != null) {
+                      _shareAnswer(state.currentAnswer!);
+                    }
+                  },
+                ),
                 PixelButton(text: '↺ Ask Again', isAccent: true, onPressed: () {
                   ref.read(oracleProvider.notifier).reset();
                   _questionController.clear();

@@ -6,15 +6,40 @@ import '../data/answers_db.dart';
 
 class EnvironmentNotifier extends Notifier<SanctumEnv> {
   @override
-  SanctumEnv build() => SanctumEnv.fireplace;
+  SanctumEnv build() {
+    // Persist the chosen sanctum across sessions
+    final box = Hive.box('settings');
+    final saved = box.get('sanctum_env', defaultValue: 'fireplace') as String;
+    return SanctumEnv.values.firstWhere(
+      (e) => e.name == saved,
+      orElse: () => SanctumEnv.fireplace,
+    );
+  }
 
   void setEnv(SanctumEnv env) {
     state = env;
+    Hive.box('settings').put('sanctum_env', env.name);
   }
 }
 
 final environmentProvider = NotifierProvider<EnvironmentNotifier, SanctumEnv>(() {
   return EnvironmentNotifier();
+});
+
+// --- Visitor Counter (local, Hive-based) ---
+class VisitorCounterNotifier extends Notifier<int> {
+  @override
+  int build() {
+    final box = Hive.box('settings');
+    // Increment on first build (i.e., each app session)
+    final count = (box.get('visitor_count', defaultValue: 0) as int) + 1;
+    box.put('visitor_count', count);
+    return count;
+  }
+}
+
+final visitorCounterProvider = NotifierProvider<VisitorCounterNotifier, int>(() {
+  return VisitorCounterNotifier();
 });
 
 final currentEnvironmentProvider = Provider<SanctumEnvironment>((ref) {

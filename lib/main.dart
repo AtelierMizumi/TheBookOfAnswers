@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'theme/app_theme.dart';
 import 'screens/gate_screen.dart';
+import 'screens/onboarding_screen.dart';
 
 import 'package:zenflip/data/answers_db.dart';
 
@@ -17,15 +18,20 @@ void main() async {
   // Load answers database
   await AnswersDB.init();
 
+  // Check if first-time user
+  final onboardingDone =
+      Hive.box('settings').get('onboarding_done', defaultValue: false) as bool;
+
   runApp(
-    const ProviderScope(
-      child: ZenFlipApp(),
+    ProviderScope(
+      child: ZenFlipApp(showOnboarding: !onboardingDone),
     ),
   );
 }
 
 class ZenFlipApp extends StatelessWidget {
-  const ZenFlipApp({super.key});
+  final bool showOnboarding;
+  const ZenFlipApp({super.key, required this.showOnboarding});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +39,8 @@ class ZenFlipApp extends StatelessWidget {
       title: 'The Book of Answers',
       theme: AppTheme.darkTheme,
       debugShowCheckedModeBanner: false,
-      home: const GateScreen(),
+      home: showOnboarding ? const OnboardingScreen() : const GateScreen(),
     );
   }
 }
+

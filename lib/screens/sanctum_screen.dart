@@ -23,6 +23,7 @@ class _SanctumScreenState extends State<SanctumScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.voidColor,
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
           const AmbientBackground(),

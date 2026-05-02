@@ -67,9 +67,20 @@ jobs:
       # 5. CREATE GITHUB RELEASE
       # ==========================================
       - name: Create Release
+        if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v1
         with:
           tag_name: "v1.0.${{ github.run_number }}"
           name: "The Book of Answers v1.0.${{ github.run_number }}"
+          body: |
+            ## 🔮 The Book of Answers — Automated Release
+
+            Built automatically from the `main` branch.
+            
+            ### 📱 Installation
+            Download `app-release.apk` below and install on any Android device.
+
+            ### 🌐 Web Version
+            Visit the live web version on GitHub Pages.
           files: build/app/outputs/flutter-apk/app-release.apk
           token: ${{ secrets.GITHUB_TOKEN }}

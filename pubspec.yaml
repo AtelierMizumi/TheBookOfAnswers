@@ -39,6 +39,7 @@ dependencies:
   hive_flutter: ^1.1.0
   google_fonts: ^8.1.0
   flame_audio: ^2.12.1
+  share_plus: ^10.1.4
 
 dev_dependencies:
   flutter_test:
